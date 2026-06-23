@@ -13,4 +13,7 @@ export const ROUTES = {
   operatorsManagers: '/operators/managers',
   operatorsTenants: '/operators/tenants',
   property: '/property',
+  appLogin: '/app-login',
+  privacy: '/privacy',
+  terms: '/terms',
 } as const;

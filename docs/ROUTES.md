@@ -17,6 +17,9 @@
 - `/operators/owners`
 - `/operators/managers`
 - `/operators/tenants`
+- `/app-login`
+- `/privacy`
+- `/terms`
 
 ## Route Groups
 

@@ -5,7 +5,7 @@ export const SITE_PAGES = {
   home: {
     path: ROUTES.home,
     title: 'Home',
-    description: 'Placeholder route for the STAYCT home page.',
+    description: 'STAYCT home page for rental accommodation discovery and operator onboarding.',
     priority: 1,
     changeFrequency: 'weekly',
     sitemap: true,
@@ -13,7 +13,7 @@ export const SITE_PAGES = {
   about: {
     path: ROUTES.about,
     title: 'About',
-    description: 'Placeholder route for the STAYCT about page.',
+    description: 'Learn what STAYCT is, who it serves, and how the platform is structured.',
     priority: 0.7,
     changeFrequency: 'monthly',
     sitemap: true,
@@ -21,7 +21,7 @@ export const SITE_PAGES = {
   contact: {
     path: ROUTES.contact,
     title: 'Contact',
-    description: 'Placeholder route for the STAYCT contact page.',
+    description: 'Contact STAYCT at support@stayct.in or +91 91363 37031 for support, business enquiries, and operator discussions.',
     priority: 0.6,
     changeFrequency: 'monthly',
     sitemap: true,
@@ -29,7 +29,7 @@ export const SITE_PAGES = {
   pricing: {
     path: ROUTES.pricing,
     title: 'Pricing',
-    description: 'Placeholder route for the STAYCT pricing page.',
+    description: 'Understand the pricing direction for seekers and operators.',
     priority: 0.7,
     changeFrequency: 'monthly',
     sitemap: true,
@@ -37,7 +37,7 @@ export const SITE_PAGES = {
   features: {
     path: ROUTES.features,
     title: 'Features',
-    description: 'Placeholder route for the STAYCT features page.',
+    description: 'See the core discovery and operator capabilities STAYCT exposes today.',
     priority: 0.7,
     changeFrequency: 'monthly',
     sitemap: true,
@@ -45,7 +45,7 @@ export const SITE_PAGES = {
   resources: {
     path: ROUTES.resources,
     title: 'Resources',
-    description: 'Placeholder route for the STAYCT resources page.',
+    description: 'Find guides, references, and supporting material for the public site.',
     priority: 0.6,
     changeFrequency: 'monthly',
     sitemap: true,
@@ -53,7 +53,7 @@ export const SITE_PAGES = {
   help: {
     path: ROUTES.help,
     title: 'Help',
-    description: 'Placeholder route for the STAYCT help page.',
+    description: 'Get help from STAYCT with clear support actions by email or phone.',
     priority: 0.5,
     changeFrequency: 'monthly',
     sitemap: true,
@@ -61,7 +61,7 @@ export const SITE_PAGES = {
   cities: {
     path: ROUTES.cities,
     title: 'Cities',
-    description: 'Placeholder route for the STAYCT city index.',
+    description: 'Browse city-level entry points for discovery.',
     priority: 0.7,
     changeFrequency: 'weekly',
     sitemap: true,
@@ -69,7 +69,7 @@ export const SITE_PAGES = {
   search: {
     path: ROUTES.search,
     title: 'Search',
-    description: 'Placeholder route for the STAYCT search page.',
+    description: 'Search verified stays by category, city, and other discovery filters.',
     priority: 0.3,
     changeFrequency: 'monthly',
     sitemap: false,
@@ -78,7 +78,7 @@ export const SITE_PAGES = {
   operators: {
     path: ROUTES.operators,
     title: 'Operators',
-    description: 'Placeholder route for the STAYCT operator hub.',
+    description: 'Entry point for owners, managers, and operators who want to list a property.',
     priority: 0.6,
     changeFrequency: 'monthly',
     sitemap: true,
@@ -86,7 +86,7 @@ export const SITE_PAGES = {
   operatorsOwners: {
     path: ROUTES.operatorsOwners,
     title: 'Owners',
-    description: 'Placeholder route for the STAYCT owner operator page.',
+    description: 'Owner-focused entry point for listing and property discovery workflows.',
     priority: 0.5,
     changeFrequency: 'monthly',
     sitemap: true,
@@ -94,7 +94,7 @@ export const SITE_PAGES = {
   operatorsManagers: {
     path: ROUTES.operatorsManagers,
     title: 'Managers',
-    description: 'Placeholder route for the STAYCT manager operator page.',
+    description: 'Manager-focused entry point for day-to-day property operations.',
     priority: 0.5,
     changeFrequency: 'monthly',
     sitemap: true,
@@ -102,9 +102,34 @@ export const SITE_PAGES = {
   operatorsTenants: {
     path: ROUTES.operatorsTenants,
     title: 'Tenants',
-    description: 'Placeholder route for the STAYCT tenant operator page.',
+    description: 'Tenant-focused entry point for communication and accommodation support.',
     priority: 0.5,
     changeFrequency: 'monthly',
+    sitemap: true,
+  },
+  appLogin: {
+    path: ROUTES.appLogin,
+    title: 'App Login',
+    description: 'Open the STAYCT operator app and continue into the management workspace.',
+    priority: 0.4,
+    changeFrequency: 'monthly',
+    sitemap: false,
+    noIndex: true,
+  },
+  privacy: {
+    path: ROUTES.privacy,
+    title: 'Privacy',
+    description: 'Review how the public site handles data, tracking, and contact information.',
+    priority: 0.3,
+    changeFrequency: 'yearly',
+    sitemap: true,
+  },
+  terms: {
+    path: ROUTES.terms,
+    title: 'Terms',
+    description: 'Review the website terms that apply to public STAYCT usage.',
+    priority: 0.3,
+    changeFrequency: 'yearly',
     sitemap: true,
   },
 } as const satisfies Record<string, PageContentEntry>;
