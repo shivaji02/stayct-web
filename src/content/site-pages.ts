@@ -5,8 +5,9 @@ import type { PageContentEntry } from '@/types';
 export const SITE_PAGES = {
   home: {
     path: ROUTES.home,
-    title: 'Home',
-    description: 'Discover accommodation across major Indian cities with STAYCT.',
+    title: 'Find PGs, Hostels & Co-living Across Indian Cities',
+    description:
+      'STAYCT helps you find and compare PGs, hostels, co-living, shared flats, and rental rooms across Hyderabad, Bengaluru, Mumbai, Pune, Chennai, and more — search by city, area, and budget.',
     priority: 1,
     changeFrequency: 'weekly',
     sitemap: true,
@@ -89,8 +90,9 @@ export const SITE_PAGES = {
   },
   search: {
     path: ROUTES.search,
-    title: 'Search Stays',
-    description: 'Search STAYCT stays with city, category, area, and sort filters.',
+    title: 'Search Stays — PGs, Hostels, Co-living & Rooms',
+    description:
+      'Search STAYCT stays by city, area, stay type, and budget. Compare PGs, hostels, co-living, shared flats, and rental rooms, then shortlist the right one.',
     priority: 0.9,
     changeFrequency: 'weekly',
     sitemap: true,

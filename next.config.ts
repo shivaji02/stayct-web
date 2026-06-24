@@ -62,7 +62,6 @@ const nextConfig: NextConfig = {
       { source: '/operators/tenants', destination: '/support', permanent: true },
       { source: '/app-login', destination: '/manage-property', permanent: true },
       { source: '/property/:slug', destination: '/stays/:slug', permanent: true },
-      { source: '/cities/mumbai', destination: '/cities', permanent: true },
     ];
   },
   async headers() {
