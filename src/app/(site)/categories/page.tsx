@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import { Breadcrumbs, StayCard, SupportContactCard } from '@/components';
 import { ROUTES, routeBuilders } from '@/constants/routes';
-import { buildSearchHref } from '@/lib';
+import { buildSearchHref } from '@/lib/discovery';
 import { buildPageMetadata } from '@/seo';
 import { getFeaturedProperties, SITE_PAGES, STAY_CATEGORIES } from '@/content';
 

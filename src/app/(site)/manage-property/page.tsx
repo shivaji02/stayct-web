@@ -4,7 +4,7 @@ import { Breadcrumbs, SupportContactCard } from '@/components';
 import { ROUTES } from '@/constants/routes';
 import { SITE_PAGES } from '@/content';
 import { buildPageMetadata } from '@/seo';
-import { getManagePropertyUrl } from '@/lib';
+import { getManagePropertyUrl } from '@/lib/discovery';
 
 export const metadata = buildPageMetadata(SITE_PAGES.manageProperty);
 

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Breadcrumbs, SupportContactCard } from '@/components';
 import { ROUTES } from '@/constants/routes';
 import { SITE_PAGES } from '@/content';
-import { buildSearchHref } from '@/lib';
+import { buildSearchHref } from '@/lib/discovery';
 import { buildPageMetadata } from '@/seo';
 
 export const metadata = buildPageMetadata(SITE_PAGES.resources);

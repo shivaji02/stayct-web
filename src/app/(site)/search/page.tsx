@@ -10,7 +10,7 @@ import {
   STAY_CATEGORIES,
 } from '@/content';
 import type { StayCategorySlug, StaySort } from '@/content/mock-stays';
-import { buildSearchHref, normalizePositiveInt, pickFirst } from '@/lib';
+import { buildSearchHref, normalizePositiveInt, pickFirst } from '@/lib/discovery';
 import { buildPageMetadata } from '@/seo';
 
 type SearchPageProps = {

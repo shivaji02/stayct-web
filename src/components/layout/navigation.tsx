@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 
 import { navigationConfig } from '@/config/navigation';
 import { ROUTES } from '@/constants/routes';
-import { isDiscoveryPath } from '@/lib';
+import { isDiscoveryPath } from '@/lib/discovery';
 
 function isActivePath(pathname: string, href: string) {
   if (href === ROUTES.search) {

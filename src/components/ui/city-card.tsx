@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import { routeBuilders } from '@/constants/routes';
-import { buildSearchHref } from '@/lib';
+import { buildSearchHref } from '@/lib/discovery';
 import type { DiscoveryCity } from '@/content/mock-stays';
 
 type CityCardProps = {

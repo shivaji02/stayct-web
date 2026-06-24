@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { Breadcrumbs, StayCard } from '@/components';
 import { ROUTES, routeBuilders } from '@/constants/routes';
 import { SUPPORT_CONTACT, getMockProperty, getRelatedProperties, getStayCategory, MOCK_PROPERTIES } from '@/content';
-import { buildSearchHref, buildSupportEnquiryMailto, getPhotoToneClasses } from '@/lib';
+import { buildSearchHref, buildSupportEnquiryMailto, getPhotoToneClasses } from '@/lib/discovery';
 import { buildPageMetadata } from '@/seo';
 import type { RouteParams } from '@/types';
 

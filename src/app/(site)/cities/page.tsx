@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import { Breadcrumbs, CityCard, SupportContactCard } from '@/components';
 import { ROUTES, routeBuilders } from '@/constants/routes';
-import { buildSearchHref } from '@/lib';
+import { buildSearchHref } from '@/lib/discovery';
 import { buildPageMetadata } from '@/seo';
 import { MOCK_CITIES, getPropertiesForCity, SITE_PAGES, STAY_CATEGORIES } from '@/content';
 

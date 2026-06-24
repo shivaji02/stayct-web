@@ -8,7 +8,7 @@ import {
 } from '@/seo';
 import {
   buildSearchHref,
-} from '@/lib';
+} from '@/lib/discovery';
 import {
   getMockCity,
   getPropertiesForCity,
