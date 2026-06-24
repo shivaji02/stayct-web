@@ -1,8 +1,5 @@
-export { PlaceholderPage } from './placeholder-page';
-
 // Layout
-export { Navigation } from './layout';
-export { Footer } from './layout';
+export { Breadcrumbs, Footer, Navigation } from './layout';
 
 // Sections
 export {
@@ -17,4 +14,4 @@ export {
 } from './sections';
 
 // UI Components
-export { CategoryCard, FeatureList, SupportContactCard } from './ui';
+export { CategoryCard, CityCard, FeatureList, StayCard, SupportContactCard } from './ui';

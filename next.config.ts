@@ -50,6 +50,21 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   outputFileTracingRoot: path.join(process.cwd()),
   reactStrictMode: true,
+  async redirects() {
+    return [
+      { source: '/contact', destination: '/support', permanent: true },
+      { source: '/help', destination: '/support', permanent: true },
+      { source: '/pricing', destination: '/resources', permanent: true },
+      { source: '/features', destination: '/resources', permanent: true },
+      { source: '/operators', destination: '/list-property', permanent: true },
+      { source: '/operators/owners', destination: '/list-property', permanent: true },
+      { source: '/operators/managers', destination: '/manage-property', permanent: true },
+      { source: '/operators/tenants', destination: '/support', permanent: true },
+      { source: '/app-login', destination: '/manage-property', permanent: true },
+      { source: '/property/:slug', destination: '/stays/:slug', permanent: true },
+      { source: '/cities/mumbai', destination: '/cities', permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

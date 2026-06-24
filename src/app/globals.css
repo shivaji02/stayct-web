@@ -14,9 +14,25 @@
     min-height: 100vh;
     font-family: 'Nunito', sans-serif;
     background-color: #f2ede3;
+    color: #1a3326;
   }
 
   * {
     box-sizing: border-box;
+  }
+
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  summary {
+    outline-color: #2d6a4f;
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: #d8ece2;
+    color: #1a3326;
   }
 }

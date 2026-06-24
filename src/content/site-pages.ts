@@ -1,11 +1,12 @@
-import { ROUTES } from '@/constants/routes';
+import { ROUTES, routeBuilders } from '@/constants/routes';
+import { MOCK_CITIES, MOCK_PROPERTIES, STAY_CATEGORIES } from '@/content/mock-stays';
 import type { PageContentEntry } from '@/types';
 
 export const SITE_PAGES = {
   home: {
     path: ROUTES.home,
     title: 'Home',
-    description: 'STAYCT home page for rental accommodation discovery and operator onboarding.',
+    description: 'Discover accommodation across major Indian cities with STAYCT.',
     priority: 1,
     changeFrequency: 'weekly',
     sitemap: true,
@@ -21,105 +22,99 @@ export const SITE_PAGES = {
   contact: {
     path: ROUTES.contact,
     title: 'Contact',
-    description: 'Contact STAYCT at support@stayct.in or +91 91363 37031 for support, business enquiries, and operator discussions.',
+    description: 'Legacy contact route redirected to Support.',
     priority: 0.6,
     changeFrequency: 'monthly',
-    sitemap: true,
+    sitemap: false,
+    noIndex: true,
   },
   pricing: {
     path: ROUTES.pricing,
     title: 'Pricing',
-    description: 'Understand the pricing direction for seekers and operators.',
+    description: 'Legacy pricing route redirected to Resources.',
     priority: 0.7,
     changeFrequency: 'monthly',
-    sitemap: true,
+    sitemap: false,
+    noIndex: true,
   },
   features: {
     path: ROUTES.features,
     title: 'Features',
-    description: 'See the core discovery and operator capabilities STAYCT exposes today.',
+    description: 'Legacy features route redirected to Resources.',
     priority: 0.7,
     changeFrequency: 'monthly',
-    sitemap: true,
+    sitemap: false,
+    noIndex: true,
   },
   resources: {
     path: ROUTES.resources,
     title: 'Resources',
-    description: 'Find guides, references, and supporting material for the public site.',
+    description: 'Find concise guides for choosing a stay, narrowing a shortlist, and understanding STAYCT.',
     priority: 0.6,
+    changeFrequency: 'monthly',
+    sitemap: true,
+  },
+  support: {
+    path: ROUTES.support,
+    title: 'Support',
+    description: 'Get help from STAYCT with FAQs, troubleshooting, phone support, and email support.',
+    priority: 0.5,
     changeFrequency: 'monthly',
     sitemap: true,
   },
   help: {
     path: ROUTES.help,
     title: 'Help',
-    description: 'Get help from STAYCT with clear support actions by email or phone.',
+    description: 'Legacy help route redirected to Support.',
     priority: 0.5,
     changeFrequency: 'monthly',
-    sitemap: true,
+    sitemap: false,
+    noIndex: true,
   },
   cities: {
     path: ROUTES.cities,
     title: 'Cities',
-    description: 'Browse city-level entry points for discovery.',
+    description: 'Browse STAYCT city pages with local inventory, areas, and discovery shortcuts.',
+    priority: 0.7,
+    changeFrequency: 'weekly',
+    sitemap: true,
+  },
+  categories: {
+    path: ROUTES.categories,
+    title: 'Categories',
+    description: 'Browse PGs, hostels, co-living, shared flats, and rental rooms by stay type.',
     priority: 0.7,
     changeFrequency: 'weekly',
     sitemap: true,
   },
   search: {
     path: ROUTES.search,
-    title: 'Search',
-    description: 'Search verified stays by category, city, and other discovery filters.',
-    priority: 0.3,
-    changeFrequency: 'monthly',
-    sitemap: false,
-    noIndex: true,
+    title: 'Search Stays',
+    description: 'Search STAYCT stays with city, category, area, and sort filters.',
+    priority: 0.9,
+    changeFrequency: 'weekly',
+    sitemap: true,
   },
-  operators: {
-    path: ROUTES.operators,
-    title: 'Operators',
-    description: 'Entry point for owners, managers, and operators who want to list a property.',
+  listProperty: {
+    path: ROUTES.listProperty,
+    title: 'List Your Property',
+    description: 'For new operators who want to list accommodation and fill vacancies through STAYCT.',
     priority: 0.6,
     changeFrequency: 'monthly',
     sitemap: true,
   },
-  operatorsOwners: {
-    path: ROUTES.operatorsOwners,
-    title: 'Owners',
-    description: 'Owner-focused entry point for listing and property discovery workflows.',
+  manageProperty: {
+    path: ROUTES.manageProperty,
+    title: 'Manage Property',
+    description: 'For existing STAYCT operators who need the management platform and support recovery paths.',
     priority: 0.5,
     changeFrequency: 'monthly',
     sitemap: true,
-  },
-  operatorsManagers: {
-    path: ROUTES.operatorsManagers,
-    title: 'Managers',
-    description: 'Manager-focused entry point for day-to-day property operations.',
-    priority: 0.5,
-    changeFrequency: 'monthly',
-    sitemap: true,
-  },
-  operatorsTenants: {
-    path: ROUTES.operatorsTenants,
-    title: 'Tenants',
-    description: 'Tenant-focused entry point for communication and accommodation support.',
-    priority: 0.5,
-    changeFrequency: 'monthly',
-    sitemap: true,
-  },
-  appLogin: {
-    path: ROUTES.appLogin,
-    title: 'App Login',
-    description: 'Open the STAYCT operator app and continue into the management workspace.',
-    priority: 0.4,
-    changeFrequency: 'monthly',
-    sitemap: false,
-    noIndex: true,
   },
   privacy: {
     path: ROUTES.privacy,
     title: 'Privacy',
-    description: 'Review how the public site handles data, tracking, and contact information.',
+    description: 'Review how STAYCT handles enquiries, contact details, and website data.',
     priority: 0.3,
     changeFrequency: 'yearly',
     sitemap: true,
@@ -127,11 +122,40 @@ export const SITE_PAGES = {
   terms: {
     path: ROUTES.terms,
     title: 'Terms',
-    description: 'Review the website terms that apply to public STAYCT usage.',
+    description: 'Review the terms that apply to STAYCT website usage and accommodation enquiries.',
     priority: 0.3,
     changeFrequency: 'yearly',
     sitemap: true,
   },
 } as const satisfies Record<string, PageContentEntry>;
 
-export const SITE_SITEMAP_ENTRIES = Object.values(SITE_PAGES).filter((page) => page.sitemap !== false);
+const dynamicCityEntries: readonly PageContentEntry[] = MOCK_CITIES.map((city) => ({
+  path: routeBuilders.city(city.slug) as `/${string}`,
+  title: `${city.name} stays`,
+  description: `Browse STAYCT stays, areas, and discovery shortcuts in ${city.name}.`,
+  priority: 0.8,
+  changeFrequency: 'weekly',
+}));
+
+const dynamicCategoryEntries: readonly PageContentEntry[] = STAY_CATEGORIES.map((category) => ({
+  path: routeBuilders.category(category.slug) as `/${string}`,
+  title: `${category.name} stays`,
+  description: `Browse ${category.name.toLowerCase()} listings on STAYCT.`,
+  priority: 0.7,
+  changeFrequency: 'weekly',
+}));
+
+const dynamicStayEntries: readonly PageContentEntry[] = MOCK_PROPERTIES.map((property) => ({
+  path: routeBuilders.stay(property.slug) as `/${string}`,
+  title: property.name,
+  description: `${property.name} in ${property.cityName} on STAYCT.`,
+  priority: 0.6,
+  changeFrequency: 'weekly',
+}));
+
+export const SITE_SITEMAP_ENTRIES = [
+  ...Object.values(SITE_PAGES).filter((page) => page.sitemap !== false),
+  ...dynamicCityEntries,
+  ...dynamicCategoryEntries,
+  ...dynamicStayEntries,
+] as const;

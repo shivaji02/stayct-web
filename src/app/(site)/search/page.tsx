@@ -1,203 +1,325 @@
 import Link from 'next/link';
-import { SupportContactCard } from '@/components';
+
+import { Breadcrumbs, StayCard, SupportContactCard } from '@/components';
 import { ROUTES } from '@/constants/routes';
-import { SITE_PAGES } from '@/content';
+import {
+  getPopularAreas,
+  MOCK_CITIES,
+  searchProperties,
+  SITE_PAGES,
+  STAY_CATEGORIES,
+} from '@/content';
+import type { StayCategorySlug, StaySort } from '@/content/mock-stays';
+import { buildSearchHref, normalizePositiveInt, pickFirst } from '@/lib';
 import { buildPageMetadata } from '@/seo';
 
 type SearchPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-const categoryChips = [
-  { label: 'PG', query: 'pg' },
-  { label: 'Hostel', query: 'hostel' },
-  { label: 'Co-living', query: 'co-living' },
-  { label: 'Shared Flat', query: 'shared-flat' },
-];
-
-const citySuggestions = ['Bengaluru', 'Hyderabad', 'Pune', 'Chennai', 'Delhi NCR', 'Mumbai'];
-
-const accommodationTypes = [
-  {
-    title: 'Student stays',
-    description: 'Start with PGs, hostels, and student-friendly shared living options.',
-    href: `${ROUTES.search}?type=student-housing`,
-  },
-  {
-    title: 'Working professional stays',
-    description: 'Browse co-living, shared flats, and workforce-ready accommodation.',
-    href: `${ROUTES.search}?type=workforce-housing`,
-  },
-  {
-    title: 'Team and corporate stays',
-    description: 'Use this path when you are booking for staff, projects, or longer managed stays.',
-    href: `${ROUTES.search}?type=corporate-housing`,
-  },
-];
-
 export const metadata = buildPageMetadata(SITE_PAGES.search);
 
-function pickFirst(value: string | string[] | undefined) {
-  return Array.isArray(value) ? value[0] : value;
-}
+const sortOptions: ReadonlyArray<{
+  label: string;
+  value: StaySort;
+}> = [
+  { label: 'Recommended', value: 'recommended' },
+  { label: 'Price: Low to High', value: 'price-low' },
+  { label: 'Price: High to Low', value: 'price-high' },
+  { label: 'City', value: 'city' },
+];
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = (await Promise.resolve(searchParams ?? {})) as Record<string, string | string[] | undefined>;
-  const query = pickFirst(params.q) ?? '';
-  const activeCategory = pickFirst(params.category);
-  const activeCity = pickFirst(params.city);
-  const activeType = pickFirst(params.type);
+  const q = pickFirst(params.q)?.trim() ?? '';
+  const city = pickFirst(params.city);
+  const category = pickFirst(params.category);
+  const area = pickFirst(params.area);
+  const sort = (pickFirst(params.sort) as StaySort | undefined) ?? 'recommended';
+  const page = normalizePositiveInt(pickFirst(params.page), 1);
+
+  const results = searchProperties(
+    {
+      q,
+      city,
+      category: category as StayCategorySlug | undefined,
+      area,
+      sort,
+    },
+    page,
+  );
+  const activeCity = city ? MOCK_CITIES.find((item) => item.slug === city) : undefined;
+  const areaOptions = (city ? getPopularAreas(city) : getPopularAreas()).slice(0, 8);
+  const activeCategory = category ? STAY_CATEGORIES.find((item) => item.slug === category) : undefined;
+  const summaryLabel = [
+    activeCity?.name,
+    activeCategory?.name,
+    areaOptions.find((item) => item.slug === area)?.name,
+    q ? `“${q}”` : undefined,
+  ]
+    .filter(Boolean)
+    .join(' · ');
 
   return (
-    <main className="bg-stayct-beige px-6 py-16 sm:px-10">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8">
-        <section className="rounded-[24px] border border-stayct-border bg-white px-7 py-8 shadow-sm sm:px-10 sm:py-10">
-          <p className="text-[11px] font-bold uppercase tracking-[.16em] text-stayct-green-accent">
-            Find a stay
-          </p>
-          <h1 className="mt-3 text-[36px] font-black tracking-[-.04em] text-stayct-green-dark sm:text-[48px]">
-            Start discovery with the city, stay type, or need you already know.
+    <main id="main-content" className="bg-stayct-beige px-4 py-10 sm:px-6 lg:px-20 lg:py-12">
+      <div className="mx-auto max-w-7xl">
+        <Breadcrumbs
+          items={[
+            { label: 'Home', href: ROUTES.home },
+            { label: 'Search Stays' },
+          ]}
+        />
+
+        <section className="rounded-[28px] border border-stayct-border bg-white p-6 shadow-sm sm:p-8">
+          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">Search stays</p>
+          <h1 className="mt-3 text-[38px] font-black tracking-[-0.05em] text-stayct-green-dark sm:text-[52px]">
+            See listings first, then refine.
           </h1>
           <p className="mt-4 max-w-3xl text-[16px] leading-[1.75] text-stayct-green-medium">
-            Use search to narrow the shortlist first, then move into the most relevant accommodation path instead of
-            browsing everything at once.
+            Use filters that survive refresh and browser back so the shortlist never collapses into a dead end.
           </p>
 
-          <form action={ROUTES.search} className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <input
-              type="search"
-              name="q"
-              defaultValue={query}
-              placeholder="Search by city, area, property type, or need"
-              className="w-full rounded-[14px] border border-stayct-border bg-stayct-bg-light px-5 py-4 text-[15px] text-stayct-green-dark outline-none transition placeholder:text-stayct-text-muted focus:border-stayct-green-accent"
-            />
+          <form action={ROUTES.search} className="mt-8 grid gap-4 lg:grid-cols-[2fr_1fr_1fr_auto]">
+            <input type="hidden" name="sort" value={sort} />
+            <label className="flex flex-col gap-2">
+              <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">Query</span>
+              <input
+                type="search"
+                name="q"
+                defaultValue={q}
+                placeholder="Property, area, commute, or need"
+                className="rounded-[16px] border border-stayct-border bg-stayct-bg-light px-4 py-4 text-[15px] text-stayct-green-dark placeholder:text-stayct-text-muted focus:border-stayct-green-accent focus:outline-none"
+              />
+            </label>
+            <label className="flex flex-col gap-2">
+              <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">City</span>
+              <select
+                name="city"
+                defaultValue={city ?? ''}
+                className="rounded-[16px] border border-stayct-border bg-stayct-bg-light px-4 py-4 text-[15px] text-stayct-green-dark focus:border-stayct-green-accent focus:outline-none"
+              >
+                <option value="">All cities</option>
+                {MOCK_CITIES.map((item) => (
+                  <option key={item.slug} value={item.slug}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="flex flex-col gap-2">
+              <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">Category</span>
+              <select
+                name="category"
+                defaultValue={category ?? ''}
+                className="rounded-[16px] border border-stayct-border bg-stayct-bg-light px-4 py-4 text-[15px] text-stayct-green-dark focus:border-stayct-green-accent focus:outline-none"
+              >
+                <option value="">All categories</option>
+                {STAY_CATEGORIES.map((item) => (
+                  <option key={item.slug} value={item.slug}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </label>
             <button
               type="submit"
-              className="rounded-[14px] bg-stayct-green-dark px-6 py-4 text-[15px] font-bold text-white transition hover:opacity-90"
+              className="rounded-[16px] bg-stayct-green-dark px-6 py-4 text-[15px] font-bold text-white transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stayct-green-accent"
             >
-              Search stays
+              Update search
             </button>
           </form>
-
-          <div className="mt-6 flex flex-wrap gap-3">
-            {categoryChips.map((chip) => {
-              const isActive = activeCategory === chip.query;
-
-              return (
-                <Link
-                  key={chip.query}
-                  href={`${ROUTES.search}?category=${chip.query}`}
-                  className={`rounded-full border px-4 py-2 text-[13px] font-semibold transition ${
-                    isActive
-                      ? 'border-stayct-green-dark bg-stayct-green-dark text-white'
-                      : 'border-stayct-border bg-white text-stayct-green-dark hover:border-stayct-green-accent'
-                  }`}
-                >
-                  {chip.label}
-                </Link>
-              );
-            })}
-          </div>
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-[1.25fr_.95fr]">
-          <div className="rounded-[24px] border border-stayct-border bg-white px-7 py-8 shadow-sm sm:px-8">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <h2 className="text-[24px] font-black tracking-[-.03em] text-stayct-green-dark">City suggestions</h2>
-                <p className="mt-2 text-[15px] leading-[1.7] text-stayct-green-medium">
-                  Begin with a city if location is your first decision.
-                </p>
-              </div>
-              <Link
-                href={ROUTES.cities}
-                className="text-[14px] font-bold text-stayct-green-accent transition hover:text-stayct-green-dark"
-              >
-                Browse all cities
+        <div className="mt-8 grid gap-6 lg:grid-cols-[300px_1fr] lg:items-start">
+          <aside className="rounded-[24px] border border-stayct-border bg-white p-6 shadow-sm lg:sticky lg:top-24">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-[18px] font-black tracking-[-0.03em] text-stayct-green-dark">Filters</h2>
+              <Link href={ROUTES.search} className="text-[13px] font-bold text-stayct-green-accent transition hover:text-stayct-green-dark">
+                Clear all
               </Link>
             </div>
 
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              {citySuggestions.map((city) => {
-                const isActive = activeCity === city;
+            <div className="mt-6">
+              <h3 className="text-[12px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">Stay type</h3>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {STAY_CATEGORIES.map((item) => {
+                  const active = category === item.slug;
 
-                return (
-                  <Link
-                    key={city}
-                    href={`${ROUTES.search}?city=${encodeURIComponent(city)}`}
-                    className={`rounded-[16px] border px-5 py-4 transition ${
-                      isActive
-                        ? 'border-stayct-green-dark bg-stayct-overlay-light'
-                        : 'border-stayct-border bg-stayct-bg-light hover:border-stayct-green-accent'
-                    }`}
-                  >
-                    <div className="text-[15px] font-bold text-stayct-green-dark">{city}</div>
-                    <div className="mt-1 text-[13px] leading-[1.6] text-stayct-green-medium">
-                      Open a city-led search path.
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="rounded-[24px] border border-stayct-border bg-white px-7 py-8 shadow-sm sm:px-8">
-            <h2 className="text-[24px] font-black tracking-[-.03em] text-stayct-green-dark">How discovery works</h2>
-            <div className="mt-5 space-y-4 text-[15px] leading-[1.7] text-stayct-green-medium">
-              <p>1. Start with a query, category, or city.</p>
-              <p>2. Use the accommodation path that matches your stage of search.</p>
-              <p>3. Continue into city or property pages once you know what to compare next.</p>
-            </div>
-
-            <div className="mt-6 rounded-[18px] bg-stayct-bg-light px-5 py-5">
-              <div className="text-[13px] font-bold uppercase tracking-[.12em] text-stayct-green-accent">
-                Empty state
+                  return (
+                    <Link
+                      key={item.slug}
+                      href={buildSearchHref({ q, city, category: active ? undefined : item.slug, area, sort })}
+                      className={`rounded-full px-3 py-2 text-[12px] font-semibold transition ${
+                        active
+                          ? 'bg-stayct-green-dark text-white'
+                          : 'border border-stayct-border text-stayct-green-dark hover:border-stayct-green-accent'
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  );
+                })}
               </div>
-              <p className="mt-2 text-[14px] leading-[1.7] text-stayct-green-medium">
-                {query || activeCategory || activeCity || activeType
-                  ? `You are exploring ${query || activeCategory || activeCity || activeType}. Refine with another city or stay type if you need a narrower path.`
-                  : 'No filters are applied yet. Choose a chip, pick a city, or search for the need you already have in mind.'}
-              </p>
             </div>
-          </div>
-        </section>
 
-        <section className="rounded-[24px] border border-stayct-border bg-white px-7 py-8 shadow-sm sm:px-10">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h2 className="text-[28px] font-black tracking-[-.03em] text-stayct-green-dark">
-                Popular accommodation paths
-              </h2>
-              <p className="mt-2 max-w-2xl text-[15px] leading-[1.7] text-stayct-green-medium">
-                Choose the path that matches the kind of stay you are evaluating.
-              </p>
+            <div className="mt-6">
+              <h3 className="text-[12px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">City</h3>
+              <div className="mt-3 flex flex-col gap-2">
+                {MOCK_CITIES.map((item) => {
+                  const active = city === item.slug;
+
+                  return (
+                    <Link
+                      key={item.slug}
+                      href={buildSearchHref({ q, city: active ? undefined : item.slug, category, area: undefined, sort })}
+                      className={`rounded-[14px] px-3 py-3 text-[14px] font-semibold transition ${
+                        active
+                          ? 'bg-stayct-green-dark text-white'
+                          : 'bg-stayct-bg-light text-stayct-green-dark hover:bg-stayct-overlay-light'
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
-          <div className="mt-6 grid gap-4 lg:grid-cols-3">
-            {accommodationTypes.map((item) => {
-              const isActive = activeType === item.href.split('=')[1];
+            <div className="mt-6">
+              <h3 className="text-[12px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">Popular areas</h3>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {areaOptions.map((item) => {
+                  const active = area === item.slug;
+                  const citySlug = 'citySlug' in item ? item.citySlug : city;
 
-              return (
-                <Link
-                  key={item.title}
-                  href={item.href}
-                  className={`rounded-[18px] border p-6 transition ${
-                    isActive
-                      ? 'border-stayct-green-dark bg-stayct-overlay-light'
-                      : 'border-stayct-border bg-white hover:border-stayct-green-accent'
-                  }`}
-                >
-                  <div className="text-[17px] font-black text-stayct-green-dark">{item.title}</div>
-                  <p className="mt-2 text-[14px] leading-[1.65] text-stayct-green-medium">{item.description}</p>
-                  <div className="mt-5 text-[13px] font-bold text-stayct-green-accent">Use this path</div>
+                  return (
+                    <Link
+                      key={`${citySlug}-${item.slug}`}
+                      href={buildSearchHref({ q, city: citySlug ?? city, category, area: active ? undefined : item.slug, sort })}
+                      className={`rounded-full px-3 py-2 text-[12px] font-semibold transition ${
+                        active
+                          ? 'bg-stayct-green-dark text-white'
+                          : 'border border-stayct-border text-stayct-green-dark hover:border-stayct-green-accent'
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-[18px] bg-stayct-bg-light p-4">
+              <h3 className="text-[12px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">Recovery</h3>
+              <p className="mt-3 text-[14px] leading-[1.7] text-stayct-green-medium">
+                If the shortlist is still unclear, use a city page or open Support instead of abandoning the search.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link href={ROUTES.cities} className="text-[13px] font-bold text-stayct-green-accent">
+                  Browse cities
                 </Link>
-              );
-            })}
-          </div>
-        </section>
+                <Link href={ROUTES.support} className="text-[13px] font-bold text-stayct-green-accent">
+                  Open support
+                </Link>
+              </div>
+            </div>
+          </aside>
 
-        <SupportContactCard description="If you cannot narrow the right stay path yet, contact STAYCT support and describe the city, stay type, or problem you are trying to solve." />
+          <section className="space-y-6">
+            <div className="rounded-[24px] border border-stayct-border bg-white p-6 shadow-sm">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">Results</p>
+                  <h2 className="mt-2 text-[30px] font-black tracking-[-0.04em] text-stayct-green-dark">
+                    {results.total} stay{results.total === 1 ? '' : 's'} found
+                  </h2>
+                  <p className="mt-3 text-[15px] leading-[1.75] text-stayct-green-medium">
+                    {summaryLabel || 'Showing all available discovery listings.'}
+                  </p>
+                </div>
+                <div>
+                  <div className="text-[12px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">Sort</div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {sortOptions.map((option) => {
+                      const active = sort === option.value;
+
+                      return (
+                        <Link
+                          key={option.value}
+                          href={buildSearchHref({ q, city, category, area, sort: option.value })}
+                          className={`rounded-full px-3 py-2 text-[12px] font-semibold transition ${
+                            active
+                              ? 'bg-stayct-green-dark text-white'
+                              : 'border border-stayct-border text-stayct-green-dark hover:border-stayct-green-accent'
+                          }`}
+                        >
+                          {option.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {results.total > 0 ? (
+              <>
+                <div className="grid gap-5 xl:grid-cols-2">
+                  {results.items.map((stay) => (
+                    <StayCard key={stay.slug} stay={stay} />
+                  ))}
+                </div>
+
+                <div className="rounded-[24px] border border-stayct-border bg-white p-6 shadow-sm">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-[14px] text-stayct-green-medium">
+                      Page {results.page} of {results.totalPages}. Browser back and refresh keep these filters because the state lives in the URL.
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      {results.page > 1 ? (
+                        <Link
+                          href={buildSearchHref({ q, city, category, area, sort, page: results.page - 1 })}
+                          className="rounded-[12px] border border-stayct-green-dark px-4 py-3 text-[14px] font-bold text-stayct-green-dark transition hover:bg-stayct-overlay-light"
+                        >
+                          Previous
+                        </Link>
+                      ) : null}
+                      {results.page < results.totalPages ? (
+                        <Link
+                          href={buildSearchHref({ q, city, category, area, sort, page: results.page + 1 })}
+                          className="rounded-[12px] bg-stayct-green-dark px-4 py-3 text-[14px] font-bold text-white transition hover:opacity-90"
+                        >
+                          Load more stays
+                        </Link>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="rounded-[24px] border border-stayct-border bg-white p-8 shadow-sm">
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">Empty state</p>
+                <h2 className="mt-3 text-[30px] font-black tracking-[-0.04em] text-stayct-green-dark">No stay matches these filters yet.</h2>
+                <p className="mt-4 max-w-2xl text-[16px] leading-[1.75] text-stayct-green-medium">
+                  Widen the city, remove the area, or switch stay type. If you still need help, use Support so the journey does not end here.
+                </p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Link href={ROUTES.search} className="rounded-[12px] bg-stayct-green-dark px-5 py-3 text-[14px] font-bold text-white">
+                    Reset search
+                  </Link>
+                  <Link
+                    href={ROUTES.support}
+                    className="rounded-[12px] border border-stayct-green-dark px-5 py-3 text-[14px] font-bold text-stayct-green-dark"
+                  >
+                    Get support
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            <SupportContactCard description="If filters still are not enough, contact STAYCT support with the city, area, and stay type you need." />
+          </section>
+        </div>
       </div>
     </main>
   );
