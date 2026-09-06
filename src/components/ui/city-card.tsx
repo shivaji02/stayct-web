@@ -2,10 +2,10 @@ import Link from 'next/link';
 
 import { routeBuilders } from '@/constants/routes';
 import { buildSearchHref } from '@/lib/discovery';
-import type { DiscoveryCity } from '@/content/mock-stays';
+import type { CityContent } from '@/content/cities';
 
 type CityCardProps = {
-  city: DiscoveryCity;
+  city: CityContent;
   propertyCount: number;
 };
 

@@ -6,7 +6,7 @@ The repository applies production security headers in `next.config.ts` so every 
 
 ### Header Values
 
-- `Content-Security-Policy`: `default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: blob:; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests`
+- `Content-Security-Policy`: `default-src 'self'; base-uri 'self'; connect-src 'self' [<origin of NEXT_PUBLIC_API_BASE_URL>]; font-src 'self' https://fonts.gstatic.com; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: blob:; object-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com` with `upgrade-insecure-requests` enabled in production only. `connect-src` adds only the parsed origin of `NEXT_PUBLIC_API_BASE_URL` / `API_BASE_URL` (path such as `/api/v1` is stripped). No wildcards, no scheme-only `http:` / `https:` tokens, and no hardcoded LAN IPs.
 - `Strict-Transport-Security`: `max-age=63072000; includeSubDomains; preload` in production only
 - `X-Frame-Options`: `DENY`
 - `X-Content-Type-Options`: `nosniff`

@@ -1,17 +1,15 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { Breadcrumbs, StayCard, SupportContactCard } from '@/components';
+import { Breadcrumbs, PublicStayCard, SupportContactCard } from '@/components';
 import { ROUTES } from '@/constants/routes';
-import {
-  getPropertiesForCategory,
-  getStayCategory,
-  MOCK_CITIES,
-  STAY_CATEGORIES,
-} from '@/content';
-import { buildSearchHref } from '@/lib/discovery';
+import { CITIES, getStayCategory } from '@/content';
+import { buildSearchHref, toDiscoveryListingsQuery } from '@/lib/discovery';
+import { getDiscoveryListings } from '@/services/public-api';
 import { buildPageMetadata } from '@/seo';
 import type { RouteParams } from '@/types';
+
+export const dynamic = 'force-dynamic';
 
 type CategoryPageProps = {
   params: RouteParams<{
@@ -39,10 +37,6 @@ export async function generateMetadata({ params }: CategoryPageProps) {
   });
 }
 
-export function generateStaticParams() {
-  return STAY_CATEGORIES.map((category) => ({ category: category.slug }));
-}
-
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { category } = await Promise.resolve(params);
   const categoryData = getStayCategory(category as Parameters<typeof getStayCategory>[0]);
@@ -51,8 +45,14 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     notFound();
   }
 
-  const stays = getPropertiesForCategory(categoryData.slug);
-  const cities = MOCK_CITIES.filter((city) => stays.some((stay) => stay.citySlug === city.slug));
+  const stays = (
+    await getDiscoveryListings(
+      toDiscoveryListingsQuery({
+        category: categoryData.slug,
+        limit: 100,
+      }),
+    )
+  ).items;
 
   return (
     <main id="main-content" className="bg-stayct-beige px-4 py-10 sm:px-6 lg:px-20 lg:py-12">
@@ -111,7 +111,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           <article className="rounded-[24px] border border-stayct-border bg-white p-6 shadow-sm">
             <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">Cities with this stay type</p>
             <div className="mt-5 flex flex-wrap gap-3">
-              {cities.map((city) => (
+              {CITIES.map((city) => (
                 <Link
                   key={city.slug}
                   href={buildSearchHref({ city: city.slug, category: categoryData.slug })}
@@ -136,7 +136,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
           <div className="mt-6 grid gap-5 xl:grid-cols-2">
             {stays.map((stay) => (
-              <StayCard key={stay.slug} stay={stay} />
+              <PublicStayCard key={stay.slug} stay={stay} />
             ))}
           </div>
         </section>

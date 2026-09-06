@@ -1,69 +1,102 @@
-export type PropertyStatus = 'draft' | 'review' | 'published' | 'paused' | 'archived';
+export type PropertyCategory = 'pg' | 'hostel' | 'co-living' | 'shared-flat' | 'rental-room';
 
-export type PropertyCategory =
-  | 'pg'
-  | 'hostel'
-  | 'co_living'
-  | 'shared_flat'
-  | 'student_housing'
-  | 'workforce_housing'
-  | 'corporate_housing'
-  | 'rental_community';
+export type PropertyVisibility = 'available' | 'limited' | 'waitlist';
 
-export interface PropertyLocation {
-  city: string;
-  citySlug: string;
-  state?: string;
-  country: string;
-  latitude?: number;
-  longitude?: number;
-}
+export type PropertyStatus = PropertyVisibility;
 
-export interface PropertyAddress {
-  line1?: string;
-  line2?: string;
-  locality?: string;
-  postalCode?: string;
-  location: PropertyLocation;
-}
+export type PropertyAddress = {
+  addressLine1: string;
+  locality: string | null;
+  city: string | null;
+  state: string | null;
+};
 
-export interface PropertyAmenity {
-  code: string;
-  label: string;
-}
+export type PropertyLocation = PropertyAddress;
+
+export type PropertyAmenity = string;
 
 export interface PropertyListItem {
   id: string;
-  slug: string;
+  identifier: string;
   name: string;
+  propertyType: string | null;
   category: PropertyCategory;
-  status: PropertyStatus;
-  location: PropertyLocation;
-  thumbnailUrl?: string | null;
-  priceFrom?: number | null;
-  currency?: string;
+  genderCategory: 'GENTS' | 'LADIES' | 'UNISEX';
+  addressLine1: string;
+  locality: string | null;
+  city: string | null;
+  state: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  coverPhotoUrl: string | null;
+  photos: readonly string[];
+  amenities: readonly string[];
+  startingFromRent: number | null;
+  totalBeds: number;
+  availableBeds: number;
+  organizationName: string;
+  organizationDisplayCode: string | null;
+  availabilityLabel: string;
 }
 
 export interface PropertyDetail extends PropertyListItem {
-  description?: string;
-  address?: PropertyAddress;
-  amenities: readonly PropertyAmenity[];
-  imageUrls: readonly string[];
-  operatorName?: string;
-  updatedAt?: string;
+  occupiedBeds: number;
+  reservedBeds: number;
+  organization: {
+    id: string;
+    name: string;
+    displayCode: string | null;
+  };
+  floors: readonly {
+    id: string;
+    name: string;
+    floorNumber: number;
+    flats: readonly {
+      id: string;
+      name: string;
+      unitNumber: string;
+      floorId: string;
+      floorNumber: number;
+      status: 'VACANT' | 'OCCUPIED' | 'PARTIAL';
+      capacity: number;
+      occupied: number;
+      available: number;
+      flatType: 'ROOM' | 'ONE_RK' | 'ONE_BHK' | 'TWO_BHK' | null;
+      flatAmenities: readonly string[];
+      monthlyRent: number | null;
+      rooms: readonly {
+        id: string;
+        name: string;
+        status: 'VACANT' | 'OCCUPIED' | 'PARTIAL';
+        capacity: number;
+        occupied: number;
+        available: number;
+        flatType: 'ROOM' | 'ONE_RK' | 'ONE_BHK' | 'TWO_BHK' | null;
+        flatAmenities: readonly string[];
+        monthlyRent: number | null;
+      }[];
+    }[];
+  }[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface PropertyQuery {
-  citySlug?: string;
-  category?: PropertyCategory;
-  search?: string;
   page?: number;
-  pageSize?: number;
+  limit?: number;
+  search?: string;
+  city?: string;
+  locality?: string;
+  category?: PropertyCategory;
+  propertyType?: string;
+  availability?: PropertyVisibility;
+  sortBy?: 'recommended' | 'price-low' | 'price-high' | 'city';
 }
 
 export interface PropertyListResponse {
   items: readonly PropertyListItem[];
   total: number;
   page: number;
-  pageSize: number;
+  limit: number;
+  totalPages: number;
 }

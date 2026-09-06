@@ -1,21 +1,15 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { Breadcrumbs, StayCard, SupportContactCard } from '@/components';
+import { Breadcrumbs, PublicStayCard } from '@/components';
 import { ROUTES } from '@/constants/routes';
-import {
-  buildPageMetadata,
-} from '@/seo';
-import {
-  buildSearchHref,
-} from '@/lib/discovery';
-import {
-  getMockCity,
-  getPropertiesForCity,
-  MOCK_CITIES,
-  STAY_CATEGORIES,
-} from '@/content';
+import { buildPageMetadata } from '@/seo';
+import { buildSearchHref, toDiscoveryListingsQuery } from '@/lib/discovery';
+import { getCity, STAY_CATEGORIES } from '@/content';
 import type { RouteParams } from '@/types';
+import { getDiscoveryListings } from '@/services/public-api';
+
+export const dynamic = 'force-dynamic';
 
 type CityPageProps = {
   params: RouteParams<{
@@ -25,7 +19,7 @@ type CityPageProps = {
 
 export async function generateMetadata({ params }: CityPageProps) {
   const { city } = await Promise.resolve(params);
-  const cityData = getMockCity(city);
+  const cityData = getCity(city);
 
   if (!cityData) {
     return buildPageMetadata({
@@ -43,22 +37,22 @@ export async function generateMetadata({ params }: CityPageProps) {
   });
 }
 
-export function generateStaticParams() {
-  return MOCK_CITIES.map((city) => ({ city: city.slug }));
-}
-
 export default async function CityPage({ params }: CityPageProps) {
   const { city } = await Promise.resolve(params);
-  const cityData = getMockCity(city);
+  const cityData = getCity(city);
 
   if (!cityData) {
     notFound();
   }
 
-  const stays = getPropertiesForCity(cityData.slug);
-  const categoriesInCity = STAY_CATEGORIES.filter((category) =>
-    stays.some((stay) => stay.category === category.slug),
-  );
+  const stays = (
+    await getDiscoveryListings(
+      toDiscoveryListingsQuery({
+        city: cityData.slug,
+        limit: 100,
+      }),
+    )
+  ).items;
 
   return (
     <main id="main-content" className="bg-stayct-beige px-4 py-10 sm:px-6 lg:px-20 lg:py-12">
@@ -113,7 +107,7 @@ export default async function CityPage({ params }: CityPageProps) {
             </div>
           </div>
           <div className="mt-6 flex flex-wrap gap-3">
-            {categoriesInCity.map((category) => (
+            {STAY_CATEGORIES.map((category) => (
               <Link
                 key={category.slug}
                 href={buildSearchHref({ city: cityData.slug, category: category.slug })}
@@ -140,7 +134,7 @@ export default async function CityPage({ params }: CityPageProps) {
 
           <div className="mt-6 grid gap-5 xl:grid-cols-2">
             {stays.map((stay) => (
-              <StayCard key={stay.slug} stay={stay} showCity={false} />
+              <PublicStayCard key={stay.slug} stay={stay} showCity={false} />
             ))}
           </div>
         </section>
@@ -207,10 +201,6 @@ export default async function CityPage({ params }: CityPageProps) {
             </div>
           </article>
         </section>
-
-        <div className="mt-8">
-          <SupportContactCard description={`If ${cityData.name} still feels broad, contact STAYCT support and mention the area, budget, or stay type you want help narrowing.`} />
-        </div>
       </div>
     </main>
   );

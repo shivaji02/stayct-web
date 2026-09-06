@@ -14,4 +14,4 @@ export {
 } from './sections';
 
 // UI Components
-export { CategoryCard, CityCard, FeatureList, StayCard, SupportContactCard } from './ui';
+export { CategoryCard, CityCard, FeatureList, PublicStayCard, SupportContactCard } from './ui';

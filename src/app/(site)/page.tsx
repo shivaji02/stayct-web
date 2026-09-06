@@ -1,19 +1,19 @@
 import Link from 'next/link';
 
-import { CityCard, StayCard } from '@/components';
+import { CityCard, PublicStayCard } from '@/components';
 import { ROUTES, routeBuilders } from '@/constants/routes';
 import {
-  getFeaturedProperties,
+  CITIES,
   getPopularAreas,
-  getPropertiesForCity,
-  MOCK_CITIES,
   SITE_PAGES,
   STAY_CATEGORIES,
 } from '@/content';
-import { buildSearchHref } from '@/lib/discovery';
+import { buildSearchHref, normalizeCitySlug } from '@/lib/discovery';
+import { getDiscoveryListings } from '@/services/public-api';
 import { buildPageMetadata } from '@/seo';
 
 export const metadata = buildPageMetadata(SITE_PAGES.home);
+export const dynamic = 'force-dynamic';
 
 const processSteps = [
   {
@@ -30,9 +30,16 @@ const processSteps = [
   },
 ] as const;
 
-export default function HomePage() {
-  const featuredStays = getFeaturedProperties(6);
+export default async function HomePage() {
+  const allListings = await getDiscoveryListings({ limit: 100 });
+  const featuredStays = allListings.items.slice(0, 6);
   const popularAreas = getPopularAreas().slice(0, 8);
+  const propertyCountByCity = new Map<string, number>();
+  for (const stay of allListings.items) {
+    const cityKey = normalizeCitySlug(stay.city);
+    if (!cityKey) continue;
+    propertyCountByCity.set(cityKey, (propertyCountByCity.get(cityKey) ?? 0) + 1);
+  }
 
   return (
     <main id="main-content">
@@ -47,7 +54,7 @@ export default function HomePage() {
             </h1>
             <p className="mt-5 max-w-2xl text-[17px] leading-[1.8] text-stayct-green-medium">
               STAYCT helps students, professionals, interns, and relocating teams shortlist PGs, hostels, co-living,
-              shared flats, and rental rooms without losing orientation.
+              shared flats, rental rooms, and individual rooms without losing orientation.
             </p>
           </div>
 
@@ -72,7 +79,7 @@ export default function HomePage() {
                   defaultValue=""
                 >
                   <option value="">All cities</option>
-                  {MOCK_CITIES.map((city) => (
+                  {CITIES.map((city) => (
                     <option key={city.slug} value={city.slug}>
                       {city.name}
                     </option>
@@ -134,8 +141,12 @@ export default function HomePage() {
           </div>
 
           <div className="mt-8 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
-            {MOCK_CITIES.map((city) => (
-              <CityCard key={city.slug} city={city} propertyCount={getPropertiesForCity(city.slug).length} />
+            {CITIES.map((city) => (
+              <CityCard
+                key={city.slug}
+                city={city}
+                propertyCount={propertyCountByCity.get(city.slug) ?? 0}
+              />
             ))}
           </div>
         </div>
@@ -207,7 +218,7 @@ export default function HomePage() {
 
           <div className="mt-8 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
             {featuredStays.map((stay) => (
-              <StayCard key={stay.slug} stay={stay} />
+              <PublicStayCard key={stay.slug} stay={stay} />
             ))}
           </div>
         </div>

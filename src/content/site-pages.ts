@@ -1,5 +1,6 @@
 import { ROUTES, routeBuilders } from '@/constants/routes';
-import { MOCK_CITIES, MOCK_PROPERTIES, STAY_CATEGORIES } from '@/content/mock-stays';
+import { STAY_CATEGORIES } from '@/content/categories';
+import { CITIES } from '@/content/cities';
 import type { PageContentEntry } from '@/types';
 
 export const SITE_PAGES = {
@@ -7,7 +8,7 @@ export const SITE_PAGES = {
     path: ROUTES.home,
     title: 'Find PGs, Hostels & Co-living Across Indian Cities',
     description:
-      'STAYCT helps you find and compare PGs, hostels, co-living, shared flats, and rental rooms across Hyderabad, Bengaluru, Mumbai, Pune, Chennai, and more — search by city, area, and budget.',
+      'STAYCT helps you find and compare PGs, hostels, co-living, shared flats, rental rooms, and individual rooms across Hyderabad, Bengaluru, Mumbai, Pune, Chennai, and more — search by city, area, and budget.',
     priority: 1,
     changeFrequency: 'weekly',
     sitemap: true,
@@ -83,7 +84,7 @@ export const SITE_PAGES = {
   categories: {
     path: ROUTES.categories,
     title: 'Categories',
-    description: 'Browse PGs, hostels, co-living, shared flats, and rental rooms by stay type.',
+    description: 'Browse PGs, hostels, co-living, shared flats, rental rooms, and individual rooms by stay type.',
     priority: 0.7,
     changeFrequency: 'weekly',
     sitemap: true,
@@ -92,7 +93,7 @@ export const SITE_PAGES = {
     path: ROUTES.search,
     title: 'Search Stays — PGs, Hostels, Co-living & Rooms',
     description:
-      'Search STAYCT stays by city, area, stay type, and budget. Compare PGs, hostels, co-living, shared flats, and rental rooms, then shortlist the right one.',
+      'Search STAYCT stays by city, area, stay type, and budget. Compare PGs, hostels, co-living, shared flats, rental rooms, and individual rooms, then shortlist the right one.',
     priority: 0.9,
     changeFrequency: 'weekly',
     sitemap: true,
@@ -131,7 +132,7 @@ export const SITE_PAGES = {
   },
 } as const satisfies Record<string, PageContentEntry>;
 
-const dynamicCityEntries: readonly PageContentEntry[] = MOCK_CITIES.map((city) => ({
+const dynamicCityEntries: readonly PageContentEntry[] = CITIES.map((city) => ({
   path: routeBuilders.city(city.slug) as `/${string}`,
   title: `${city.name} stays`,
   description: `Browse STAYCT stays, areas, and discovery shortcuts in ${city.name}.`,
@@ -147,17 +148,8 @@ const dynamicCategoryEntries: readonly PageContentEntry[] = STAY_CATEGORIES.map(
   changeFrequency: 'weekly',
 }));
 
-const dynamicStayEntries: readonly PageContentEntry[] = MOCK_PROPERTIES.map((property) => ({
-  path: routeBuilders.stay(property.slug) as `/${string}`,
-  title: property.name,
-  description: `${property.name} in ${property.cityName} on STAYCT.`,
-  priority: 0.6,
-  changeFrequency: 'weekly',
-}));
-
 export const SITE_SITEMAP_ENTRIES = [
   ...Object.values(SITE_PAGES).filter((page) => page.sitemap !== false),
   ...dynamicCityEntries,
   ...dynamicCategoryEntries,
-  ...dynamicStayEntries,
 ] as const;
