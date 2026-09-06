@@ -6,6 +6,15 @@ import type {
   PropertyQuery,
 } from '@/types/property';
 import type { LeadCreateInput, LeadCreateResponse } from '@/types/lead';
+import type {
+  DiscoveryListingDetail,
+  DiscoveryListingsQuery,
+  DiscoveryListingsResponse,
+  PublicDiscoveryListingEnquiryInput,
+  PublicDiscoveryListingEnquiryResult,
+  PublicDiscoverySubmissionInput,
+  PublicDiscoverySubmissionResult,
+} from '@/types/discovery';
 import type { SearchQuery, SearchResponse } from '@/types/search';
 
 export type PublicApiMethod = 'GET' | 'POST';
@@ -23,6 +32,10 @@ export const PUBLIC_API_PATHS = {
   cities: '/public/cities',
   search: '/public/search',
   enquiry: '/public/enquiry',
+  discoverySubmissions: '/public/discovery/submissions',
+  discoveryListings: '/public/discovery/listings',
+  discoveryListingBySlug: (slug: string) => `/public/discovery/listings/${slug}`,
+  discoveryListingEnquiry: (slug: string) => `/public/discovery/listings/${slug}/enquiries`,
 } as const;
 
 export type PublicPropertiesListContract = PublicApiEndpoint<
@@ -67,6 +80,34 @@ export type PublicLeadCreateContract = PublicApiEndpoint<
   LeadCreateResponse
 >;
 
+export type PublicDiscoverySubmissionContract = PublicApiEndpoint<
+  'POST',
+  typeof PUBLIC_API_PATHS.discoverySubmissions,
+  PublicDiscoverySubmissionInput,
+  PublicDiscoverySubmissionResult
+>;
+
+export type PublicDiscoveryListingsContract = PublicApiEndpoint<
+  'GET',
+  typeof PUBLIC_API_PATHS.discoveryListings,
+  DiscoveryListingsQuery,
+  DiscoveryListingsResponse
+>;
+
+export type PublicDiscoveryListingDetailContract = PublicApiEndpoint<
+  'GET',
+  '/public/discovery/listings/:slug',
+  { slug: string },
+  DiscoveryListingDetail
+>;
+
+export type PublicDiscoveryListingEnquiryContract = PublicApiEndpoint<
+  'POST',
+  '/public/discovery/listings/:slug/enquiries',
+  PublicDiscoveryListingEnquiryInput,
+  PublicDiscoveryListingEnquiryResult
+>;
+
 export type PublicApiContracts = Readonly<{
   properties: PublicPropertiesListContract;
   propertyDetail: PublicPropertyDetailContract;
@@ -74,6 +115,10 @@ export type PublicApiContracts = Readonly<{
   cityDetail: PublicCityDetailContract;
   search: PublicSearchContract;
   enquiry: PublicLeadCreateContract;
+  discoverySubmission: PublicDiscoverySubmissionContract;
+  discoveryListings: PublicDiscoveryListingsContract;
+  discoveryListingDetail: PublicDiscoveryListingDetailContract;
+  discoveryListingEnquiry: PublicDiscoveryListingEnquiryContract;
 }>;
 
 export type PublicApiListItemTypes = {

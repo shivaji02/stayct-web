@@ -19,7 +19,7 @@ export const seoConfig: SeoConfig = {
   siteName: SITE_NAME,
   defaultTitle: SITE_NAME,
   titleTemplate: `%s | ${SITE_NAME}`,
-  description: 'Find and compare PGs, hostels, co-living, shared flats, and rental rooms across Indian cities with STAYCT.',
+  description: 'Find and compare PGs, hostels, co-living, shared flats, rental rooms, and individual rooms across Indian cities with STAYCT.',
   robots: {
     index: true,
     follow: true,

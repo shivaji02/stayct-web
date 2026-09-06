@@ -16,10 +16,10 @@ function assertAbsoluteHttpUrl(value: string, name: string): string {
   }
 }
 
-function readRequiredUrl(name: string, fallback: string): string {
-  const value = process.env[name]?.trim();
+function readRequiredUrl(value: string | undefined, name: string, fallback: string): string {
+  const trimmed = value?.trim();
 
-  if (!value) {
+  if (!trimmed) {
     if (process.env.NODE_ENV === 'production') {
       throw new Error(`${name} is required in production.`);
     }
@@ -27,15 +27,19 @@ function readRequiredUrl(name: string, fallback: string): string {
     return assertAbsoluteHttpUrl(fallback, name);
   }
 
-  return assertAbsoluteHttpUrl(value, name);
+  return assertAbsoluteHttpUrl(trimmed, name);
 }
 
-function readOptionalUrl(name: string): string | null {
-  const value = process.env[name]?.trim();
-  return value ? assertAbsoluteHttpUrl(value, name) : null;
+function readOptionalUrl(value: string | undefined, name: string): string | null {
+  const trimmed = value?.trim();
+  return trimmed ? assertAbsoluteHttpUrl(trimmed, name) : null;
 }
 
 export const env = {
-  siteUrl: readRequiredUrl('NEXT_PUBLIC_SITE_URL', 'http://localhost:3000'),
-  publicApiBaseUrl: readOptionalUrl('NEXT_PUBLIC_API_BASE_URL') ?? readOptionalUrl('API_BASE_URL'),
+  // Next.js only inlines NEXT_PUBLIC_* values that are accessed as static
+  // property reads. Dynamic process.env[name] stays undefined in the browser.
+  siteUrl: readRequiredUrl(process.env.NEXT_PUBLIC_SITE_URL, 'NEXT_PUBLIC_SITE_URL', 'http://localhost:3000'),
+  publicApiBaseUrl:
+    readOptionalUrl(process.env.NEXT_PUBLIC_API_BASE_URL, 'NEXT_PUBLIC_API_BASE_URL') ??
+    readOptionalUrl(process.env.API_BASE_URL, 'API_BASE_URL'),
 } as const;

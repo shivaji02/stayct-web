@@ -1,9 +1,8 @@
-import Link from 'next/link';
-
 import { Breadcrumbs, SupportContactCard } from '@/components';
 import { ROUTES } from '@/constants/routes';
-import { SITE_PAGES, SUPPORT_CONTACT } from '@/content';
+import { SITE_PAGES } from '@/content';
 import { buildPageMetadata } from '@/seo';
+import { ListPropertyForm } from './list-property-form';
 
 export const metadata = buildPageMetadata(SITE_PAGES.listProperty);
 
@@ -22,19 +21,15 @@ export default function ListPropertyPage() {
         <section className="rounded-[28px] border border-stayct-border bg-white p-6 shadow-sm sm:p-8">
           <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">New operators</p>
           <h1 className="mt-3 text-[38px] font-black tracking-[-0.05em] text-stayct-green-dark sm:text-[52px]">
-            List your property without forcing new operators through multiple branches.
+            List your property for review without forcing new operators through multiple branches.
           </h1>
           <p className="mt-4 max-w-3xl text-[16px] leading-[1.75] text-stayct-green-medium">
-            This page exists for first-time STAYCT operators. It should explain the onboarding value, show the next action, and hand off to support cleanly.
+            Use the form below to send the details our team needs to verify and publish your listing once approved.
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href={SUPPORT_CONTACT.emailHref} className="rounded-[12px] bg-stayct-green-dark px-5 py-3 text-[14px] font-bold text-white">
-              Start by email
-            </Link>
-            <Link href={SUPPORT_CONTACT.phoneHref} className="rounded-[12px] border border-stayct-green-dark px-5 py-3 text-[14px] font-bold text-stayct-green-dark">
-              Call STAYCT
-            </Link>
-          </div>
+        </section>
+
+        <section className="mt-8">
+          <ListPropertyForm />
         </section>
 
         <section className="mt-8 grid gap-5 lg:grid-cols-3">

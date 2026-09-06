@@ -69,12 +69,23 @@ export function Navigation() {
             <span className="text-right text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">
               {currentLabel}
             </span>
-            <details className="relative">
+            <details key={pathname} className="relative">
               <summary
-                className="cursor-pointer list-none rounded-[10px] border border-stayct-border bg-white px-3 py-2 text-[13px] font-bold text-stayct-green-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stayct-green-accent"
+                className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-[12px] border border-stayct-border bg-white text-stayct-green-dark transition hover:bg-stayct-bg-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stayct-green-accent [&::-webkit-details-marker]:hidden"
                 style={{ listStyle: 'none' }}
               >
-                Menu
+                <span className="sr-only">Toggle navigation menu</span>
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  className="h-5 w-5"
+                >
+                  <path d="M4 7h16M4 12h16M4 17h16" />
+                </svg>
               </summary>
               <div className="absolute right-0 top-full mt-2 w-64 rounded-[18px] border border-stayct-border bg-white p-2 shadow-lg shadow-black/10">
                 <div className="rounded-[12px] bg-stayct-bg-light px-3 py-2 text-[12px] font-semibold text-stayct-green-medium">

@@ -24,6 +24,24 @@ export type PageContentEntry = {
 };
 
 export type { CityDetail, CityListItem, CityListResponse, CityOverview, CityQuery } from './city';
+export type {
+  DiscoveryAmenity,
+  DiscoveryAvailabilityStatus,
+  DiscoveryCategory,
+  DiscoveryGenderPreference,
+  DiscoveryListingDetail,
+  DiscoveryListingListItem,
+  DiscoveryListingsQuery,
+  DiscoveryListingsResponse,
+  DiscoveryListingsSort,
+  DiscoveryPublishStatus,
+  DiscoverySource,
+  DiscoveryVerificationStatus,
+  PublicDiscoveryListingEnquiryInput,
+  PublicDiscoveryListingEnquiryResult,
+  PublicDiscoverySubmissionInput,
+  PublicDiscoverySubmissionResult,
+} from './discovery';
 export type { LeadContactDetails, LeadCreateInput, LeadCreateResponse, LeadSource, LeadType } from './lead';
 export type {
   PropertyAddress,

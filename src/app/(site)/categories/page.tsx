@@ -1,15 +1,17 @@
 import Link from 'next/link';
 
-import { Breadcrumbs, StayCard, SupportContactCard } from '@/components';
+import { Breadcrumbs, PublicStayCard, SupportContactCard } from '@/components';
 import { ROUTES, routeBuilders } from '@/constants/routes';
 import { buildSearchHref } from '@/lib/discovery';
+import { getDiscoveryListings } from '@/services/public-api';
 import { buildPageMetadata } from '@/seo';
-import { getFeaturedProperties, SITE_PAGES, STAY_CATEGORIES } from '@/content';
+import { SITE_PAGES, STAY_CATEGORIES } from '@/content';
 
 export const metadata = buildPageMetadata(SITE_PAGES.categories);
+export const dynamic = 'force-dynamic';
 
-export default function CategoriesPage() {
-  const featured = getFeaturedProperties(5);
+export default async function CategoriesPage() {
+  const featured = (await getDiscoveryListings({ limit: 5 })).items;
 
   return (
     <main id="main-content" className="bg-stayct-beige px-4 py-10 sm:px-6 lg:px-20 lg:py-12">
@@ -68,7 +70,7 @@ export default function CategoriesPage() {
           </div>
           <div className="mt-6 grid gap-5 xl:grid-cols-2">
             {featured.map((stay) => (
-              <StayCard key={stay.slug} stay={stay} />
+              <PublicStayCard key={stay.slug} stay={stay} />
             ))}
           </div>
         </section>

@@ -1,54 +1,67 @@
 import Link from 'next/link';
 
-import { Breadcrumbs, StayCard, SupportContactCard } from '@/components';
+import { Breadcrumbs, PublicStayCard, SupportContactCard } from '@/components';
 import { ROUTES } from '@/constants/routes';
+import { CITIES, getPopularAreas, SITE_PAGES, STAY_CATEGORIES } from '@/content';
+import type { DiscoveryListingsResponse, DiscoveryListingsSort } from '@/types/discovery';
 import {
-  getPopularAreas,
-  MOCK_CITIES,
-  searchProperties,
-  SITE_PAGES,
-  STAY_CATEGORIES,
-} from '@/content';
-import type { StayCategorySlug, StaySort } from '@/content/mock-stays';
-import { buildSearchHref, normalizePositiveInt, pickFirst } from '@/lib/discovery';
+  buildSearchHref,
+  normalizeAreaSlug,
+  normalizeCategorySlug,
+  normalizeCitySlug,
+  normalizePositiveInt,
+  normalizeSearchSort,
+  pickFirst,
+  toDiscoveryListingsQuery,
+} from '@/lib/discovery';
+import { getDiscoveryListings, PublicApiError } from '@/services/public-api';
 import { buildPageMetadata } from '@/seo';
+
+import { SearchForm } from './search-form';
 
 type SearchPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export const metadata = buildPageMetadata(SITE_PAGES.search);
+export const dynamic = 'force-dynamic';
 
 const sortOptions: ReadonlyArray<{
   label: string;
-  value: StaySort;
+  value: DiscoveryListingsSort;
 }> = [
   { label: 'Recommended', value: 'recommended' },
-  { label: 'Price: Low to High', value: 'price-low' },
-  { label: 'Price: High to Low', value: 'price-high' },
-  { label: 'City', value: 'city' },
+  { label: 'Name', value: 'title' },
 ];
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = (await Promise.resolve(searchParams ?? {})) as Record<string, string | string[] | undefined>;
   const q = pickFirst(params.q)?.trim() ?? '';
-  const city = pickFirst(params.city);
-  const category = pickFirst(params.category);
-  const area = pickFirst(params.area);
-  const sort = (pickFirst(params.sort) as StaySort | undefined) ?? 'recommended';
+  const city = normalizeCitySlug(pickFirst(params.city));
+  const category = normalizeCategorySlug(pickFirst(params.category));
+  const area = normalizeAreaSlug(pickFirst(params.area), city);
+  const sort = normalizeSearchSort(pickFirst(params.sort));
   const page = normalizePositiveInt(pickFirst(params.page), 1);
 
-  const results = searchProperties(
-    {
-      q,
-      city,
-      category: category as StayCategorySlug | undefined,
-      area,
-      sort,
-    },
-    page,
-  );
-  const activeCity = city ? MOCK_CITIES.find((item) => item.slug === city) : undefined;
+  let results: DiscoveryListingsResponse | undefined;
+  let errorMessage: string | null = null;
+  try {
+    results = await getDiscoveryListings(
+      toDiscoveryListingsQuery({
+        q: q || undefined,
+        city,
+        category,
+        area,
+        sort,
+        page,
+        limit: 12,
+      }),
+    );
+  } catch (error) {
+    errorMessage = error instanceof PublicApiError ? error.message : 'Couldn’t load live listings. Please try again.';
+  }
+
+  const activeCity = city ? CITIES.find((item) => item.slug === city) : undefined;
   const areaOptions = (city ? getPopularAreas(city) : getPopularAreas()).slice(0, 8);
   const activeCategory = category ? STAY_CATEGORIES.find((item) => item.slug === category) : undefined;
   const summaryLabel = [
@@ -79,55 +92,14 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             Use filters that survive refresh and browser back so the shortlist never collapses into a dead end.
           </p>
 
-          <form action={ROUTES.search} className="mt-8 grid gap-4 lg:grid-cols-[2fr_1fr_1fr_auto]">
-            <input type="hidden" name="sort" value={sort} />
-            <label className="flex flex-col gap-2">
-              <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">Query</span>
-              <input
-                type="search"
-                name="q"
-                defaultValue={q}
-                placeholder="Property, area, commute, or need"
-                className="rounded-[16px] border border-stayct-border bg-stayct-bg-light px-4 py-4 text-[15px] text-stayct-green-dark placeholder:text-stayct-text-muted focus:border-stayct-green-accent focus:outline-none"
-              />
-            </label>
-            <label className="flex flex-col gap-2">
-              <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">City</span>
-              <select
-                name="city"
-                defaultValue={city ?? ''}
-                className="rounded-[16px] border border-stayct-border bg-stayct-bg-light px-4 py-4 text-[15px] text-stayct-green-dark focus:border-stayct-green-accent focus:outline-none"
-              >
-                <option value="">All cities</option>
-                {MOCK_CITIES.map((item) => (
-                  <option key={item.slug} value={item.slug}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="flex flex-col gap-2">
-              <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">Category</span>
-              <select
-                name="category"
-                defaultValue={category ?? ''}
-                className="rounded-[16px] border border-stayct-border bg-stayct-bg-light px-4 py-4 text-[15px] text-stayct-green-dark focus:border-stayct-green-accent focus:outline-none"
-              >
-                <option value="">All categories</option>
-                {STAY_CATEGORIES.map((item) => (
-                  <option key={item.slug} value={item.slug}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <button
-              type="submit"
-              className="rounded-[16px] bg-stayct-green-dark px-6 py-4 text-[15px] font-bold text-white transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stayct-green-accent"
-            >
-              Update search
-            </button>
-          </form>
+          <SearchForm
+            q={q}
+            city={city ?? ''}
+            category={category ?? ''}
+            sort={sort}
+            cities={CITIES}
+            categories={STAY_CATEGORIES}
+          />
         </section>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[300px_1fr] lg:items-start">
@@ -165,7 +137,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             <div className="mt-6">
               <h3 className="text-[12px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">City</h3>
               <div className="mt-3 flex flex-col gap-2">
-                {MOCK_CITIES.map((item) => {
+                {CITIES.map((item) => {
                   const active = city === item.slug;
 
                   return (
@@ -190,7 +162,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               <div className="mt-3 flex flex-wrap gap-2">
                 {areaOptions.map((item) => {
                   const active = area === item.slug;
-                  const citySlug = 'citySlug' in item ? item.citySlug : city;
+                  const citySlug = item.citySlug ?? city;
 
                   return (
                     <Link
@@ -231,7 +203,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">Results</p>
                   <h2 className="mt-2 text-[30px] font-black tracking-[-0.04em] text-stayct-green-dark">
-                    {results.total} stay{results.total === 1 ? '' : 's'} found
+                    {results ? `${results.total} stay${results.total === 1 ? '' : 's'} found` : 'Live listings unavailable'}
                   </h2>
                   <p className="mt-3 text-[15px] leading-[1.75] text-stayct-green-medium">
                     {summaryLabel || 'Showing all available discovery listings.'}
@@ -262,11 +234,27 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               </div>
             </div>
 
-            {results.total > 0 ? (
+            {errorMessage ? (
+              <div className="rounded-[24px] border border-stayct-border bg-white p-8 shadow-sm">
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">API error</p>
+                <h2 className="mt-3 text-[30px] font-black tracking-[-0.04em] text-stayct-green-dark">
+                  Live listings are temporarily unavailable.
+                </h2>
+                <p className="mt-4 max-w-2xl text-[16px] leading-[1.75] text-stayct-green-medium">{errorMessage}</p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Link href={ROUTES.search} className="rounded-[12px] bg-stayct-green-dark px-5 py-3 text-[14px] font-bold text-white">
+                    Retry search
+                  </Link>
+                  <Link href={ROUTES.support} className="rounded-[12px] border border-stayct-green-dark px-5 py-3 text-[14px] font-bold text-stayct-green-dark">
+                    Get support
+                  </Link>
+                </div>
+              </div>
+            ) : results && results.total > 0 ? (
               <>
                 <div className="grid gap-5 xl:grid-cols-2">
                   {results.items.map((stay) => (
-                    <StayCard key={stay.slug} stay={stay} />
+                    <PublicStayCard key={stay.slug} stay={stay} />
                   ))}
                 </div>
 

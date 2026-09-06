@@ -1,16 +1,12 @@
 export { SITE_PAGES, SITE_SITEMAP_ENTRIES } from './site-pages';
 export {
-  MOCK_CITIES,
-  MOCK_PROPERTIES,
+  CATEGORY_API_TO_SLUG,
+  CATEGORY_SLUG_TO_API,
   STAY_CATEGORIES,
-  getFeaturedProperties,
-  getMockCity,
-  getMockProperty,
-  getPopularAreas,
-  getPropertiesForCategory,
-  getPropertiesForCity,
-  getRelatedProperties,
   getStayCategory,
-  searchProperties,
-} from './mock-stays';
+  isStayCategorySlug,
+} from './categories';
+export type { StayCategory, StayCategorySlug } from './categories';
+export { CITIES, getCity, getPopularAreas } from './cities';
+export type { CityArea, CityContent, PopularAreaOption } from './cities';
 export { SUPPORT_CONTACT } from './support';

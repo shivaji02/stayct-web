@@ -1,49 +1,54 @@
 import path from 'node:path';
 
+import { loadEnvConfig } from '@next/env';
 import type { NextConfig } from 'next';
 
-const CONTENT_SECURITY_POLICY = [
-  "default-src 'self'",
-  "base-uri 'self'",
-  "connect-src 'self'",
-  "font-src 'self' https://fonts.gstatic.com",
-  "form-action 'self'",
-  "frame-ancestors 'none'",
-  "img-src 'self' data: blob:",
-  "object-src 'none'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  'upgrade-insecure-requests',
-].join('; ');
+import { buildContentSecurityPolicy } from './src/config/csp';
 
-const securityHeaders = [
-  {
-    key: 'Content-Security-Policy',
-    value: CONTENT_SECURITY_POLICY,
-  },
-  {
-    key: 'X-Content-Type-Options',
-    value: 'nosniff',
-  },
-  {
-    key: 'X-Frame-Options',
-    value: 'DENY',
-  },
-  {
-    key: 'Referrer-Policy',
-    value: 'strict-origin-when-cross-origin',
-  },
-  {
-    key: 'Permissions-Policy',
-    value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
-  },
-];
+// next.config is evaluated before Next's automatic .env load in some paths.
+// Load it here so DEV connect-src uses the current NEXT_PUBLIC_API_BASE_URL origin.
+loadEnvConfig(process.cwd());
 
-if (process.env.NODE_ENV === 'production') {
-  securityHeaders.push({
-    key: 'Strict-Transport-Security',
-    value: 'max-age=63072000; includeSubDomains; preload',
-  });
+function isProduction(): boolean {
+  return process.env.NODE_ENV === 'production';
+}
+
+function securityHeaders() {
+  const production = isProduction();
+  const headers = [
+    {
+      key: 'Content-Security-Policy',
+      value: buildContentSecurityPolicy({
+        apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || process.env.API_BASE_URL,
+        isProduction: production,
+      }),
+    },
+    {
+      key: 'X-Content-Type-Options',
+      value: 'nosniff',
+    },
+    {
+      key: 'X-Frame-Options',
+      value: 'DENY',
+    },
+    {
+      key: 'Referrer-Policy',
+      value: 'strict-origin-when-cross-origin',
+    },
+    {
+      key: 'Permissions-Policy',
+      value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+    },
+  ];
+
+  if (production) {
+    headers.push({
+      key: 'Strict-Transport-Security',
+      value: 'max-age=63072000; includeSubDomains; preload',
+    });
+  }
+
+  return headers;
 }
 
 const nextConfig: NextConfig = {
@@ -68,7 +73,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/:path*',
-        headers: securityHeaders,
+        headers: securityHeaders(),
       },
     ];
   },

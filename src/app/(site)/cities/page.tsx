@@ -2,13 +2,23 @@ import Link from 'next/link';
 
 import { Breadcrumbs, CityCard, SupportContactCard } from '@/components';
 import { ROUTES, routeBuilders } from '@/constants/routes';
-import { buildSearchHref } from '@/lib/discovery';
+import { buildSearchHref, normalizeCitySlug } from '@/lib/discovery';
+import { getDiscoveryListings } from '@/services/public-api';
 import { buildPageMetadata } from '@/seo';
-import { MOCK_CITIES, getPropertiesForCity, SITE_PAGES, STAY_CATEGORIES } from '@/content';
+import { CITIES, SITE_PAGES, STAY_CATEGORIES } from '@/content';
 
 export const metadata = buildPageMetadata(SITE_PAGES.cities);
+export const dynamic = 'force-dynamic';
 
-export default function CitiesPage() {
+export default async function CitiesPage() {
+  const allListings = await getDiscoveryListings({ limit: 100 });
+  const propertyCountByCity = new Map<string, number>();
+  for (const stay of allListings.items) {
+    const cityKey = normalizeCitySlug(stay.city);
+    if (!cityKey) continue;
+    propertyCountByCity.set(cityKey, (propertyCountByCity.get(cityKey) ?? 0) + 1);
+  }
+
   return (
     <main id="main-content" className="bg-stayct-beige px-4 py-10 sm:px-6 lg:px-20 lg:py-12">
       <div className="mx-auto max-w-7xl">
@@ -25,8 +35,8 @@ export default function CitiesPage() {
         </section>
 
         <section className="mt-8 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
-          {MOCK_CITIES.map((city) => (
-            <CityCard key={city.slug} city={city} propertyCount={getPropertiesForCity(city.slug).length} />
+          {CITIES.map((city) => (
+            <CityCard key={city.slug} city={city} propertyCount={propertyCountByCity.get(city.slug) ?? 0} />
           ))}
         </section>
 
@@ -37,7 +47,7 @@ export default function CitiesPage() {
               Move into search without losing your location context.
             </h2>
             <div className="mt-5 flex flex-wrap gap-3">
-              {MOCK_CITIES.slice(0, 6).map((city) => (
+              {CITIES.slice(0, 6).map((city) => (
                 <Link
                   key={city.slug}
                   href={buildSearchHref({ city: city.slug })}
