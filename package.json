@@ -11,7 +11,10 @@
     "start": "node .next/standalone/server.js",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
-    "test": "NEXT_PUBLIC_API_BASE_URL=http://localhost:4000/api/v1 NEXT_PUBLIC_SITE_URL=http://localhost:3000 tsx --tsconfig tsconfig.test.json --test tests/*.test.tsx"
+    "test": "NEXT_PUBLIC_API_BASE_URL=http://localhost:4000/api/v1 NEXT_PUBLIC_SITE_URL=http://localhost:3000 tsx --tsconfig tsconfig.test.json --test tests/*.test.tsx",
+    "verify": "node scripts/verify.mjs fast",
+    "verify:native": "node scripts/verify.mjs native",
+    "verify:release": "node scripts/verify.mjs release"
   },
   "dependencies": {
     "next": "^15.0.0",

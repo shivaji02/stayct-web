@@ -17,8 +17,8 @@ export const navigationConfig = {
   ] as const satisfies readonly NavigationItem[],
   footer: [
     { label: 'About', href: ROUTES.about },
-    { label: 'Privacy', href: ROUTES.privacy },
-    { label: 'Terms', href: ROUTES.terms },
+    { label: 'Privacy Policy', href: ROUTES.privacy },
+    { label: 'Terms of Service', href: ROUTES.terms },
     { label: 'Support', href: ROUTES.support },
   ] as const satisfies readonly NavigationItem[],
 } as const satisfies {

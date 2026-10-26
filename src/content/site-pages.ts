@@ -8,7 +8,7 @@ export const SITE_PAGES = {
     path: ROUTES.home,
     title: 'Find PGs, Hostels & Co-living Across Indian Cities',
     description:
-      'STAYCT helps you find and compare PGs, hostels, co-living, shared flats, rental rooms, and individual rooms across Hyderabad, Bengaluru, Mumbai, Pune, Chennai, and more — search by city, area, and budget.',
+      'stayct helps you find and compare PGs, hostels, co-living, shared flats, rental rooms, and individual rooms across Hyderabad, Bengaluru, Mumbai, Pune, Chennai, and more — search by city, area, and budget.',
     priority: 1,
     changeFrequency: 'weekly',
     sitemap: true,
@@ -51,7 +51,8 @@ export const SITE_PAGES = {
   resources: {
     path: ROUTES.resources,
     title: 'Resources',
-    description: 'Find concise guides for choosing a stay, narrowing a shortlist, and understanding STAYCT.',
+    description:
+      'Find concise guides for choosing a stay, narrowing a shortlist, and understanding STAYCT.',
     priority: 0.6,
     changeFrequency: 'monthly',
     sitemap: true,
@@ -59,7 +60,8 @@ export const SITE_PAGES = {
   support: {
     path: ROUTES.support,
     title: 'Support',
-    description: 'Get help from STAYCT with FAQs, troubleshooting, phone support, and email support.',
+    description:
+      'Get help from stayct with FAQs, troubleshooting, phone support, and email support.',
     priority: 0.5,
     changeFrequency: 'monthly',
     sitemap: true,
@@ -84,7 +86,8 @@ export const SITE_PAGES = {
   categories: {
     path: ROUTES.categories,
     title: 'Categories',
-    description: 'Browse PGs, hostels, co-living, shared flats, rental rooms, and individual rooms by stay type.',
+    description:
+      'Browse PGs, hostels, co-living, shared flats, rental rooms, and individual rooms by stay type.',
     priority: 0.7,
     changeFrequency: 'weekly',
     sitemap: true,
@@ -101,7 +104,8 @@ export const SITE_PAGES = {
   listProperty: {
     path: ROUTES.listProperty,
     title: 'List Your Property',
-    description: 'For new operators who want to list accommodation and fill vacancies through STAYCT.',
+    description:
+      'For new operators who want to list accommodation and fill vacancies through STAYCT.',
     priority: 0.6,
     changeFrequency: 'monthly',
     sitemap: true,
@@ -109,23 +113,25 @@ export const SITE_PAGES = {
   manageProperty: {
     path: ROUTES.manageProperty,
     title: 'Manage Property',
-    description: 'For existing STAYCT operators who need the management platform and support recovery paths.',
+    description:
+      'For existing STAYCT operators who need the management platform and support recovery paths.',
     priority: 0.5,
     changeFrequency: 'monthly',
     sitemap: true,
   },
   privacy: {
     path: ROUTES.privacy,
-    title: 'Privacy',
-    description: 'Review how STAYCT handles enquiries, contact details, and website data.',
+    title: 'Privacy Policy',
+    description:
+      'How stayct collects, uses and protects information across our website and applications.',
     priority: 0.3,
     changeFrequency: 'yearly',
     sitemap: true,
   },
   terms: {
     path: ROUTES.terms,
-    title: 'Terms',
-    description: 'Review the terms that apply to STAYCT website usage and accommodation enquiries.',
+    title: 'Terms of Service',
+    description: 'Terms governing your use of the stayct platform and services.',
     priority: 0.3,
     changeFrequency: 'yearly',
     sitemap: true,

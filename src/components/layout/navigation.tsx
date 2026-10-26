@@ -26,7 +26,7 @@ function isActivePath(pathname: string, href: string) {
 export function Navigation() {
   const pathname = usePathname();
   const currentItem = navigationConfig.primary.find((item) => isActivePath(pathname, item.href));
-  const currentLabel = pathname === ROUTES.home ? 'Home' : currentItem?.label ?? 'Current page';
+  const currentLabel = pathname === ROUTES.home ? 'Home' : (currentItem?.label ?? 'Current page');
 
   return (
     <header className="sticky top-0 z-50 border-b border-stayct-border bg-stayct-beige/95 backdrop-blur">
@@ -37,7 +37,7 @@ export function Navigation() {
               href={ROUTES.home}
               className="font-black tracking-[-0.03em] text-stayct-green-dark transition hover:text-stayct-green-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stayct-green-accent"
             >
-              STAYCT
+              stayct
             </Link>
             <span className="hidden rounded-full border border-stayct-border bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-stayct-green-accent sm:inline-flex">
               Discovery Platform

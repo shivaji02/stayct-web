@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: siteConfig.name,
+    name: 'stayct',
     url: siteConfig.siteUrl,
     email: SUPPORT_CONTACT.email,
     telephone: SUPPORT_CONTACT.phoneDisplay,

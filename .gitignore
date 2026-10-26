@@ -20,3 +20,6 @@ coverage/
 npm-debug.log*
 yarn-error.log*
 *.tsbuildinfo
+
+# Local verification logs and machine-readable results
+/.verification/

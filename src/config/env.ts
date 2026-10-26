@@ -38,8 +38,17 @@ function readOptionalUrl(value: string | undefined, name: string): string | null
 export const env = {
   // Next.js only inlines NEXT_PUBLIC_* values that are accessed as static
   // property reads. Dynamic process.env[name] stays undefined in the browser.
-  siteUrl: readRequiredUrl(process.env.NEXT_PUBLIC_SITE_URL, 'NEXT_PUBLIC_SITE_URL', 'http://localhost:3000'),
+  siteUrl: readRequiredUrl(
+    process.env.NEXT_PUBLIC_SITE_URL,
+    'NEXT_PUBLIC_SITE_URL',
+    'http://localhost:3000',
+  ),
   publicApiBaseUrl:
     readOptionalUrl(process.env.NEXT_PUBLIC_API_BASE_URL, 'NEXT_PUBLIC_API_BASE_URL') ??
     readOptionalUrl(process.env.API_BASE_URL, 'API_BASE_URL'),
+  appStoreUrl: readOptionalUrl(process.env.NEXT_PUBLIC_APP_STORE_URL, 'NEXT_PUBLIC_APP_STORE_URL'),
+  googlePlayUrl: readOptionalUrl(
+    process.env.NEXT_PUBLIC_GOOGLE_PLAY_URL,
+    'NEXT_PUBLIC_GOOGLE_PLAY_URL',
+  ),
 } as const;

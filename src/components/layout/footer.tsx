@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { AppDownloadLinks } from '@/components/ui';
 import { navigationConfig } from '@/config/navigation';
 import { routeBuilders, ROUTES } from '@/constants/routes';
 import { CITIES, STAY_CATEGORIES, SUPPORT_CONTACT } from '@/content';
@@ -12,35 +13,58 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-20">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr] lg:gap-10">
           <section className="max-w-md">
-            <p className="text-[22px] font-black tracking-[-0.03em] text-white">STAYCT</p>
+            <p className="text-[22px] font-black tracking-[-0.03em] text-white">stayct</p>
             <p className="mt-4 text-[14px] leading-[1.75] text-stayct-text-light">
-              Discovery-first accommodation search for PGs, hostels, co-living, shared flats, rental rooms, and individual rooms.
+              Discovery-first accommodation search for PGs, hostels, co-living, shared flats, rental
+              rooms, and individual rooms.
             </p>
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               <Link
                 href={SUPPORT_CONTACT.emailHref}
                 className="rounded-[16px] border border-white/10 bg-white/5 px-4 py-3 text-[14px] text-stayct-text-light transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
-                <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-light">Email</div>
+                <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-light">
+                  Email
+                </div>
                 <div className="mt-2 font-semibold text-white">{SUPPORT_CONTACT.email}</div>
               </Link>
               <Link
                 href={SUPPORT_CONTACT.phoneHref}
                 className="rounded-[16px] border border-white/10 bg-white/5 px-4 py-3 text-[14px] text-stayct-text-light transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
-                <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-light">Phone</div>
+                <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-light">
+                  Phone
+                </div>
                 <div className="mt-2 font-semibold text-white">{SUPPORT_CONTACT.phoneDisplay}</div>
               </Link>
+            </div>
+            <div className="mt-6">
+              <h2 className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-light">
+                Download stayct
+              </h2>
+              <AppDownloadLinks
+                className="mt-3 grid gap-3"
+                itemClassName="rounded-[14px] border border-white/10 bg-white px-4 py-3 text-center text-[14px] font-bold text-stayct-green-dark transition hover:bg-stayct-bg-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                unavailableClassName="rounded-[14px] border border-white/10 bg-white/5 px-4 py-3 text-center text-[14px] font-bold text-stayct-text-light"
+              />
             </div>
           </section>
 
           <section>
-            <h2 className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-light">Discover</h2>
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-light">
+              Discover
+            </h2>
             <div className="mt-3 flex flex-col gap-2.5">
-              <Link href={ROUTES.search} className="text-[14px] text-stayct-text-light transition hover:text-white">
+              <Link
+                href={ROUTES.search}
+                className="text-[14px] text-stayct-text-light transition hover:text-white"
+              >
                 Search stays
               </Link>
-              <Link href={ROUTES.cities} className="text-[14px] text-stayct-text-light transition hover:text-white">
+              <Link
+                href={ROUTES.cities}
+                className="text-[14px] text-stayct-text-light transition hover:text-white"
+              >
                 Browse cities
               </Link>
               <Link
@@ -49,14 +73,19 @@ export function Footer() {
               >
                 Stay categories
               </Link>
-              <Link href={ROUTES.resources} className="text-[14px] text-stayct-text-light transition hover:text-white">
+              <Link
+                href={ROUTES.resources}
+                className="text-[14px] text-stayct-text-light transition hover:text-white"
+              >
                 Resources
               </Link>
             </div>
           </section>
 
           <section>
-            <h2 className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-light">Cities</h2>
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-light">
+              Cities
+            </h2>
             <div className="mt-3 flex flex-col gap-2.5">
               {footerCities.map((city) => (
                 <Link
@@ -71,7 +100,9 @@ export function Footer() {
           </section>
 
           <section>
-            <h2 className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-light">Categories</h2>
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-light">
+              Categories
+            </h2>
             <div className="mt-3 flex flex-col gap-2.5">
               {STAY_CATEGORIES.map((category) => (
                 <Link
@@ -89,12 +120,16 @@ export function Footer() {
         <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-5 sm:mt-12 sm:gap-4 sm:pt-6 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap gap-4">
             {navigationConfig.footer.map((item) => (
-              <Link key={item.href} href={item.href} className="text-[13px] text-stayct-text-light transition hover:text-white">
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-[13px] text-stayct-text-light transition hover:text-white"
+              >
                 {item.label}
               </Link>
             ))}
           </div>
-          <div className="text-[13px] text-stayct-text-light">© 2026 STAYCT · stayct.in</div>
+          <div className="text-[13px] text-stayct-text-light">© 2026 stayct · stayct.in</div>
         </div>
       </div>
     </footer>

@@ -1,0 +1,41 @@
+{
+  "repository": "stayct-web",
+  "fast": [
+    {
+      "id": "typecheck",
+      "label": "TypeScript",
+      "script": "typecheck"
+    },
+    {
+      "id": "lint",
+      "label": "ESLint",
+      "script": "lint",
+      "args": [
+        "--cache",
+        "--cache-strategy",
+        "content",
+        "--cache-location",
+        ".verification/eslint-cache"
+      ]
+    },
+    {
+      "id": "test",
+      "label": "Unit Tests",
+      "script": "test"
+    }
+  ],
+  "native": [
+    {
+      "id": "native",
+      "label": "Native",
+      "reason": "This repository has no native application."
+    }
+  ],
+  "release": [
+    {
+      "id": "release",
+      "label": "Release",
+      "reason": "No artifact verification configured; existing build command remains available."
+    }
+  ]
+}

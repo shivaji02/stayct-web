@@ -1,3 +1,4 @@
+export { AppDownloadLinks } from './app-download-links';
 export { CategoryCard } from './category-card';
 export { CityCard } from './city-card';
 export { FeatureList } from './feature-list';

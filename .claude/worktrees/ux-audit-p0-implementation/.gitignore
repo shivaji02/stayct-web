@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Build output
+dist/
+
+# OS / editor
+.DS_Store
+
+# Environment & secrets
+.env
+.env.*
+
+# Test / logs
+coverage/
+npm-debug.log*
+yarn-error.log*
+*.tsbuildinfo
