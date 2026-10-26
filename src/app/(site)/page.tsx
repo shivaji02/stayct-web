@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { AppDownloadLinks, CityCard, PublicStayCard } from '@/components';
+import { CityCard, PublicStayCard } from '@/components';
 import { ROUTES, routeBuilders } from '@/constants/routes';
 import { CITIES, getPopularAreas, SITE_PAGES, STAY_CATEGORIES } from '@/content';
 import { buildSearchHref, normalizeCitySlug } from '@/lib/discovery';
@@ -69,7 +69,10 @@ export default async function HomePage() {
           </div>
 
           <div className="mt-8 rounded-[28px] border border-stayct-border bg-white p-5 shadow-sm sm:p-7">
-            <form action={ROUTES.search} className="grid gap-4 lg:grid-cols-[2.2fr_1fr_1fr_auto]">
+            <form
+              action={ROUTES.search}
+              className="grid gap-4 lg:grid-cols-[2.2fr_1fr_1fr_auto] lg:items-end"
+            >
               <label className="flex flex-col gap-2">
                 <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">
                   What are you looking for?
@@ -78,7 +81,7 @@ export default async function HomePage() {
                   type="search"
                   name="q"
                   placeholder="Search by property, area, commute, or need"
-                  className="rounded-[16px] border border-stayct-border bg-stayct-bg-light px-4 py-4 text-[15px] text-stayct-green-dark placeholder:text-stayct-text-muted focus:border-stayct-green-accent focus:outline-none"
+                  className="h-14 rounded-[16px] border border-stayct-border bg-stayct-bg-light px-4 text-[15px] text-stayct-green-dark placeholder:text-stayct-text-muted focus:border-stayct-green-accent focus:outline-none"
                 />
               </label>
               <label className="flex flex-col gap-2">
@@ -87,7 +90,7 @@ export default async function HomePage() {
                 </span>
                 <select
                   name="city"
-                  className="rounded-[16px] border border-stayct-border bg-stayct-bg-light px-4 py-4 text-[15px] text-stayct-green-dark focus:border-stayct-green-accent focus:outline-none"
+                  className="h-14 rounded-[16px] border border-stayct-border bg-stayct-bg-light px-4 text-[15px] text-stayct-green-dark focus:border-stayct-green-accent focus:outline-none"
                   defaultValue=""
                 >
                   <option value="">All cities</option>
@@ -104,7 +107,7 @@ export default async function HomePage() {
                 </span>
                 <select
                   name="category"
-                  className="rounded-[16px] border border-stayct-border bg-stayct-bg-light px-4 py-4 text-[15px] text-stayct-green-dark focus:border-stayct-green-accent focus:outline-none"
+                  className="h-14 rounded-[16px] border border-stayct-border bg-stayct-bg-light px-4 text-[15px] text-stayct-green-dark focus:border-stayct-green-accent focus:outline-none"
                   defaultValue=""
                 >
                   <option value="">All stays</option>
@@ -117,7 +120,7 @@ export default async function HomePage() {
               </label>
               <button
                 type="submit"
-                className="rounded-[16px] bg-stayct-green-dark px-6 py-4 text-[15px] font-bold text-white transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stayct-green-accent"
+                className="h-14 rounded-[16px] bg-stayct-green-dark px-6 text-[15px] font-bold text-white transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stayct-green-accent"
               >
                 Find a stay
               </button>
@@ -136,22 +139,6 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="mt-6 rounded-[24px] border border-stayct-border bg-white/75 p-5 shadow-sm sm:p-6">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-accent">
-                  Download stayct
-                </p>
-                <h2 className="mt-2 text-[24px] font-black tracking-[-0.03em] text-stayct-green-dark">
-                  Use stayct on your phone.
-                </h2>
-                <p className="mt-2 max-w-2xl text-[14px] leading-[1.7] text-stayct-green-medium">
-                  Install the mobile app when your store listing is available for your platform.
-                </p>
-              </div>
-              <AppDownloadLinks className="flex flex-col gap-3 sm:flex-row lg:justify-end" />
-            </div>
-          </div>
         </div>
       </section>
 

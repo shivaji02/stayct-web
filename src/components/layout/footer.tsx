@@ -18,7 +18,7 @@ export function Footer() {
               Discovery-first accommodation search for PGs, hostels, co-living, shared flats, rental
               rooms, and individual rooms.
             </p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
               <Link
                 href={SUPPORT_CONTACT.emailHref}
                 className="rounded-[16px] border border-white/10 bg-white/5 px-4 py-3 text-[14px] text-stayct-text-light transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
@@ -35,18 +35,16 @@ export function Footer() {
                 <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-light">
                   Phone
                 </div>
-                <div className="mt-2 font-semibold text-white">{SUPPORT_CONTACT.phoneDisplay}</div>
+                <div className="mt-2 whitespace-nowrap font-semibold text-white">
+                  {SUPPORT_CONTACT.phoneDisplay}
+                </div>
               </Link>
             </div>
             <div className="mt-6">
               <h2 className="text-[11px] font-bold uppercase tracking-[0.12em] text-stayct-green-light">
                 Download stayct
               </h2>
-              <AppDownloadLinks
-                className="mt-3 grid gap-3"
-                itemClassName="rounded-[14px] border border-white/10 bg-white px-4 py-3 text-center text-[14px] font-bold text-stayct-green-dark transition hover:bg-stayct-bg-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                unavailableClassName="rounded-[14px] border border-white/10 bg-white/5 px-4 py-3 text-center text-[14px] font-bold text-stayct-text-light"
-              />
+              <AppDownloadLinks />
             </div>
           </section>
 
